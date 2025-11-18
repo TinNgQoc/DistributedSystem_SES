@@ -1,0 +1,30 @@
+# SES Distributed System Project
+
+## 1. Giới thiệu
+Hệ thống mô phỏng giao thức SES (Synchronous Event System) với 15 process, truyền message, quản lý đồng hồ vector, buffer, delivery.
+
+## 2. Thành phần chính
+- config_loader.py: Đọc và kiểm tra cấu hình hệ thống.
+- process_node.py: Quản lý process, gửi/nhận message.
+- ses_clock.py: Quản lý đồng hồ vector SES.
+- buffer_manager.py: Quản lý buffer SES.
+- deliver_engine.py: Xử lý deliver message.
+- logger_ses.py: Ghi log sự kiện.
+- console_ui.py: Hiển thị log trên console.
+- keyboard_control.py: Điều khiển bằng phím.
+
+## 3. Cách chạy demo
+- Chạy script run_demo.sh để khởi tạo 15 process.
+- Kiểm tra log tại demo_logs/.
+- Dùng keyboard_control để thao tác runtime.
+
+## 4. Kiểm thử
+- Đã kiểm thử unit test cho từng module.
+- Kiểm thử hệ thống với 15 process, kill process, kiểm tra log và buffer.
+
+## 5. Checklist video demo
+- Giới thiệu SES, buffer, delivery.
+- Demo gửi/nhận message, buffer, deliver.
+- Giải thích log, timestamp, dependency.
+- Thao tác keyboard_control.
+- Kiểm thử kill process, kiểm tra hệ thống ổn định.

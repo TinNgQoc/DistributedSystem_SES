@@ -1,0 +1,10 @@
+# Checklist cho video demo SES
+
+1. Giới thiệu tổng quan SES, mục tiêu hệ thống
+2. Giải thích cơ chế buffer, điều kiện SES
+3. Demo gửi/nhận message, buffer, deliver
+4. Hiển thị log trên console và file
+5. Giải thích timestamp, dependency
+6. Thao tác keyboard_control (b, t, p, r)
+7. Kiểm thử kill process, kiểm tra hệ thống ổn định
+8. Tổng kết, trả lời câu hỏi

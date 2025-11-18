@@ -1,0 +1,29 @@
+# Tài liệu thiết kế hệ thống SES
+
+## 1. Kiến trúc tổng thể
+- 15 process chạy song song, mỗi process là một node độc lập.
+- Giao tiếp qua message, mỗi message có vector timestamp SES.
+- Buffer và delivery tuân thủ điều kiện SES.
+
+## 2. Thiết kế module
+- config_loader: Đọc file config, validate cấu hình.
+- process_node: Tạo thread gửi message, nhận message, quản lý trạng thái.
+- ses_clock: Vector clock, merge, tick, thread-safe.
+- buffer_manager: Buffer message, kiểm tra điều kiện deliver, thread-safe.
+- deliver_engine: Deliver message, cập nhật clock, log, callback.
+- logger_ses: Ghi log vào file, flush, thread-safe.
+- console_ui: Hiển thị log, filter sự kiện.
+- keyboard_control: Điều khiển runtime, không block main thread.
+
+## 3. Luồng hoạt động
+- Process gửi message → tăng clock → gửi đi.
+- Nhận message → merge clock → kiểm tra điều kiện SES → buffer/deliver.
+- Khi đủ điều kiện → deliver → cập nhật clock → log.
+
+## 4. Đảm bảo thread-safe
+- Tất cả cập nhật clock, buffer, log đều dùng lock.
+- Không race condition, không deadlock.
+
+## 5. Kiểm thử
+- Unit test cho từng module.
+- Test hệ thống với 15 process, kill process, kiểm tra log, buffer.

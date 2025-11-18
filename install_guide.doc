@@ -1,0 +1,19 @@
+# Hướng dẫn cài đặt hệ thống SES
+
+## 1. Yêu cầu hệ thống
+- Python >= 3.8
+- Hệ điều hành: Windows/Linux/Mac
+
+## 2. Cài đặt
+- Clone source code:
+  git clone <repo_url>
+- Cài package (nếu có):
+  pip install -r requirements.txt
+
+## 3. Chạy demo
+- Chạy script run_demo.sh (Linux/Mac) hoặc run_demo.ps1 (Windows)
+- Kiểm tra log tại demo_logs/
+
+## 4. Lưu ý
+- Đảm bảo đủ quyền ghi file trong thư mục demo_logs
+- Có thể chỉnh sửa config.json để thay đổi cấu hình hệ thống

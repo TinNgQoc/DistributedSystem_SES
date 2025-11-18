@@ -1,0 +1,23 @@
+# Tài liệu sử dụng hệ thống SES
+
+## 1. Chuẩn bị
+- Cài Python >= 3.8
+- Clone source code về máy
+- Cài các package cần thiết (nếu có)
+
+## 2. Chạy hệ thống
+- Chạy script run_demo.sh để khởi tạo 15 process SES song song.
+- Kiểm tra log tại demo_logs/pid_<id>.txt
+- Sử dụng keyboard_control để thao tác:
+  - b: show buffer
+  - t: show timestamp
+  - p: pause sending
+  - r: resume
+
+## 3. Kiểm thử
+- Kiểm tra log, buffer, delivery trên console và file.
+- Kill 1 process, kiểm tra hệ thống vẫn hoạt động.
+
+## 4. Xem log
+- Log đầy đủ tại demo_logs/.
+- Có thể filter log trên console_ui.
