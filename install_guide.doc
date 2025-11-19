@@ -12,8 +12,8 @@
 
 ## 3. Chạy demo
 - Chạy script run_demo.sh (Linux/Mac) hoặc run_demo.ps1 (Windows)
-- Kiểm tra log tại demo_logs/
+- Kiểm tra log tại logs/
 
 ## 4. Lưu ý
-- Đảm bảo đủ quyền ghi file trong thư mục demo_logs
+- Đảm bảo đủ quyền ghi file trong thư mục logs
 - Có thể chỉnh sửa config.json để thay đổi cấu hình hệ thống

@@ -15,7 +15,7 @@ Hệ thống mô phỏng giao thức SES (Synchronous Event System) với 15 pro
 
 ## 3. Cách chạy demo
 - Chạy script run_demo.sh để khởi tạo 15 process.
-- Kiểm tra log tại demo_logs/.
+- Kiểm tra log tại logs/.
 - Dùng keyboard_control để thao tác runtime.
 
 ## 4. Kiểm thử

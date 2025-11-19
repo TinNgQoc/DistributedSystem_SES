@@ -16,6 +16,8 @@
     {"id": 13, "ip": "127.0.0.1", "port": 5013},
     {"id": 14, "ip": "127.0.0.1", "port": 5014}
   ],
-  "send_rate": 50,
-  "messages_per_process": 150
+  "send_rate": 500,
+  "messages_per_process": 150,
+  "startup_delay": 8,
+  "enable_startup_sync": true
 }

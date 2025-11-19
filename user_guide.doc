@@ -7,7 +7,7 @@
 
 ## 2. Chạy hệ thống
 - Chạy script run_demo.sh để khởi tạo 15 process SES song song.
-- Kiểm tra log tại demo_logs/pid_<id>.txt
+- Kiểm tra log tại logs/pid_<id>.txt
 - Sử dụng keyboard_control để thao tác:
   - b: show buffer
   - t: show timestamp
@@ -19,5 +19,5 @@
 - Kill 1 process, kiểm tra hệ thống vẫn hoạt động.
 
 ## 4. Xem log
-- Log đầy đủ tại demo_logs/.
+- Log đầy đủ tại logs/.
 - Có thể filter log trên console_ui.
