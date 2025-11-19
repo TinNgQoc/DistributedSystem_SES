@@ -1,0 +1,182 @@
+2025-11-20 01:19:34 - P0 - INFO - Logger initialized for Process 0
+2025-11-20 01:19:34 - P0 - INFO - Process 0 initialized on 127.0.0.1:5000
+2025-11-20 01:19:34 - P0 - INFO - Server listening on 127.0.0.1:5000
+2025-11-20 01:19:39 - P0 - DEBUG - Sending to P1 at rate 119 msgs/min (delay=0.504s)
+2025-11-20 01:19:39 - P0 - DEBUG - Sending to P2 at rate 118 msgs/min (delay=0.508s)
+2025-11-20 01:19:39 - P0 - INFO - Process 0 started with 2 sender threads
+2025-11-20 01:19:39 - P0 - INFO - SEND: message 1 to P1 | MsgVC=[1, 0, 0] | CurrentVC=[P0:2*]
+2025-11-20 01:19:39 - P0 - INFO - SEND: message 1 to P2 | MsgVC=[2, 0, 0] | CurrentVC=[P0:2*]
+2025-11-20 01:19:39 - P0 - INFO - RECEIVE: message 1 from P1 | MsgVC=[1, 2, 0] | CurrentVC=[P0:2*]
+2025-11-20 01:19:39 - P0 - WARNING - BUFFERED: message 1 from P1 | MsgVC=[1, 2, 0] | CurrentVC=[2, 0, 0] | BufferSize=1 | Reason: Missing 1 message(s) from P1 (need VC[1]=1, got 2)
+2025-11-20 01:19:40 - P0 - INFO - SEND: message 2 to P2 | MsgVC=[4, 0, 0] | CurrentVC=[P0:4*]
+2025-11-20 01:19:40 - P0 - INFO - SEND: message 2 to P1 | MsgVC=[3, 0, 0] | CurrentVC=[P0:4*]
+2025-11-20 01:19:40 - P0 - INFO - RECEIVE: message 1 from P2 | MsgVC=[0, 0, 1] | CurrentVC=[P0:4*]
+2025-11-20 01:19:40 - P0 - INFO - DELIVERED (DIRECT): message 1 from P2 | MsgVC=[0, 0, 1] | VC_Changes=[P0:4→5, P2:0→1] | NewVC=[5, 0, 1]
+2025-11-20 01:19:40 - P0 - INFO - RECEIVE: message 2 from P1 | MsgVC=[1, 5, 0] | CurrentVC=[P0:5*, P2:1]
+2025-11-20 01:19:40 - P0 - WARNING - BUFFERED: message 2 from P1 | MsgVC=[1, 5, 0] | CurrentVC=[5, 0, 1] | BufferSize=2 | Reason: Missing 4 message(s) from P1 (need VC[1]=1, got 5)
+2025-11-20 01:19:40 - P0 - INFO - SEND: message 3 to P1 | MsgVC=[6, 0, 1] | CurrentVC=[P0:6*, P2:1]
+2025-11-20 01:19:40 - P0 - INFO - SEND: message 3 to P2 | MsgVC=[7, 0, 1] | CurrentVC=[P0:7*, P2:1]
+2025-11-20 01:19:41 - P0 - INFO - RECEIVE: message 3 from P1 | MsgVC=[1, 7, 0] | CurrentVC=[P0:7*, P2:1]
+2025-11-20 01:19:41 - P0 - WARNING - BUFFERED: message 3 from P1 | MsgVC=[1, 7, 0] | CurrentVC=[7, 0, 1] | BufferSize=3 | Reason: Missing 6 message(s) from P1 (need VC[1]=1, got 7)
+2025-11-20 01:19:41 - P0 - INFO - SEND: message 4 to P1 | MsgVC=[8, 0, 1] | CurrentVC=[P0:9*, P2:1]
+2025-11-20 01:19:41 - P0 - INFO - SEND: message 4 to P2 | MsgVC=[9, 0, 1] | CurrentVC=[P0:9*, P2:1]
+2025-11-20 01:19:41 - P0 - INFO - RECEIVE: message 2 from P2 | MsgVC=[0, 0, 4] | CurrentVC=[P0:9*, P2:1]
+2025-11-20 01:19:41 - P0 - WARNING - BUFFERED: message 2 from P2 | MsgVC=[0, 0, 4] | CurrentVC=[9, 0, 1] | BufferSize=4 | Reason: Missing 2 message(s) from P2 (need VC[2]=2, got 4)
+2025-11-20 01:19:41 - P0 - INFO - RECEIVE: message 4 from P1 | MsgVC=[1, 9, 0] | CurrentVC=[P0:9*, P2:1]
+2025-11-20 01:19:41 - P0 - WARNING - BUFFERED: message 4 from P1 | MsgVC=[1, 9, 0] | CurrentVC=[9, 0, 1] | BufferSize=5 | Reason: Missing 8 message(s) from P1 (need VC[1]=1, got 9)
+2025-11-20 01:19:41 - P0 - INFO - SEND: message 5 to P2 | MsgVC=[11, 0, 1] | CurrentVC=[P0:11*, P2:1]
+2025-11-20 01:19:41 - P0 - INFO - SEND: message 5 to P1 | MsgVC=[10, 0, 1] | CurrentVC=[P0:11*, P2:1]
+2025-11-20 01:19:42 - P0 - INFO - SEND: message 6 to P1 | MsgVC=[13, 0, 1] | CurrentVC=[P0:13*, P2:1]
+2025-11-20 01:19:42 - P0 - INFO - SEND: message 6 to P2 | MsgVC=[12, 0, 1] | CurrentVC=[P0:13*, P2:1]
+2025-11-20 01:19:42 - P0 - INFO - RECEIVE: message 5 from P1 | MsgVC=[1, 11, 0] | CurrentVC=[P0:13*, P2:1]
+2025-11-20 01:19:42 - P0 - WARNING - BUFFERED: message 5 from P1 | MsgVC=[1, 11, 0] | CurrentVC=[13, 0, 1] | BufferSize=6 | Reason: Missing 10 message(s) from P1 (need VC[1]=1, got 11)
+2025-11-20 01:19:42 - P0 - INFO - RECEIVE: message 3 from P2 | MsgVC=[0, 0, 6] | CurrentVC=[P0:13*, P2:1]
+2025-11-20 01:19:42 - P0 - WARNING - BUFFERED: message 3 from P2 | MsgVC=[0, 0, 6] | CurrentVC=[13, 0, 1] | BufferSize=7 | Reason: Missing 4 message(s) from P2 (need VC[2]=2, got 6)
+2025-11-20 01:19:42 - P0 - INFO - SEND: message 7 to P1 | MsgVC=[14, 0, 1] | CurrentVC=[P0:15*, P2:1]
+2025-11-20 01:19:42 - P0 - INFO - SEND: message 7 to P2 | MsgVC=[15, 0, 1] | CurrentVC=[P0:15*, P2:1]
+2025-11-20 01:19:42 - P0 - INFO - RECEIVE: message 6 from P1 | MsgVC=[1, 13, 0] | CurrentVC=[P0:15*, P2:1]
+2025-11-20 01:19:42 - P0 - WARNING - BUFFERED: message 6 from P1 | MsgVC=[1, 13, 0] | CurrentVC=[15, 0, 1] | BufferSize=8 | Reason: Missing 12 message(s) from P1 (need VC[1]=1, got 13)
+2025-11-20 01:19:43 - P0 - INFO - SEND: message 8 to P1 | MsgVC=[16, 0, 1] | CurrentVC=[P0:16*, P2:1]
+2025-11-20 01:19:43 - P0 - INFO - RECEIVE: message 4 from P2 | MsgVC=[0, 0, 9] | CurrentVC=[P0:17*, P2:1]
+2025-11-20 01:19:43 - P0 - WARNING - BUFFERED: message 4 from P2 | MsgVC=[0, 0, 9] | CurrentVC=[17, 0, 1] | BufferSize=9 | Reason: Missing 7 message(s) from P2 (need VC[2]=2, got 9)
+2025-11-20 01:19:43 - P0 - INFO - SEND: message 8 to P2 | MsgVC=[17, 0, 1] | CurrentVC=[P0:17*, P2:1]
+2025-11-20 01:19:43 - P0 - INFO - RECEIVE: message 7 from P1 | MsgVC=[1, 15, 0] | CurrentVC=[P0:17*, P2:1]
+2025-11-20 01:19:43 - P0 - WARNING - BUFFERED: message 7 from P1 | MsgVC=[1, 15, 0] | CurrentVC=[17, 0, 1] | BufferSize=10 | Reason: Missing 14 message(s) from P1 (need VC[1]=1, got 15)
+2025-11-20 01:19:43 - P0 - INFO - SEND: message 9 to P1 | MsgVC=[18, 0, 1] | CurrentVC=[P0:18*, P2:1]
+2025-11-20 01:19:43 - P0 - INFO - SEND: message 9 to P2 | MsgVC=[19, 0, 1] | CurrentVC=[P0:19*, P2:1]
+2025-11-20 01:19:44 - P0 - INFO - RECEIVE: message 8 from P1 | MsgVC=[1, 17, 0] | CurrentVC=[P0:19*, P2:1]
+2025-11-20 01:19:44 - P0 - WARNING - BUFFERED: message 8 from P1 | MsgVC=[1, 17, 0] | CurrentVC=[19, 0, 1] | BufferSize=11 | Reason: Missing 16 message(s) from P1 (need VC[1]=1, got 17)
+2025-11-20 01:19:44 - P0 - INFO - RECEIVE: message 5 from P2 | MsgVC=[0, 0, 11] | CurrentVC=[P0:19*, P2:1]
+2025-11-20 01:19:44 - P0 - WARNING - BUFFERED: message 5 from P2 | MsgVC=[0, 0, 11] | CurrentVC=[19, 0, 1] | BufferSize=12 | Reason: Missing 9 message(s) from P2 (need VC[2]=2, got 11)
+2025-11-20 01:19:44 - P0 - INFO - SEND: message 10 to P1 | MsgVC=[20, 0, 1] | CurrentVC=[P0:20*, P2:1]
+2025-11-20 01:19:44 - P0 - INFO - SEND: message 10 to P2 | MsgVC=[21, 0, 1] | CurrentVC=[P0:21*, P2:1]
+2025-11-20 01:19:44 - P0 - INFO - RECEIVE: message 9 from P1 | MsgVC=[1, 19, 0] | CurrentVC=[P0:21*, P2:1]
+2025-11-20 01:19:44 - P0 - WARNING - BUFFERED: message 9 from P1 | MsgVC=[1, 19, 0] | CurrentVC=[21, 0, 1] | BufferSize=13 | Reason: Missing 18 message(s) from P1 (need VC[1]=1, got 19)
+2025-11-20 01:19:44 - P0 - INFO - SEND: message 11 to P1 | MsgVC=[22, 0, 1] | CurrentVC=[P0:22*, P2:1]
+2025-11-20 01:19:44 - P0 - INFO - SEND: message 11 to P2 | MsgVC=[23, 0, 1] | CurrentVC=[P0:23*, P2:1]
+2025-11-20 01:19:45 - P0 - INFO - RECEIVE: message 6 from P2 | MsgVC=[0, 0, 13] | CurrentVC=[P0:23*, P2:1]
+2025-11-20 01:19:45 - P0 - WARNING - BUFFERED: message 6 from P2 | MsgVC=[0, 0, 13] | CurrentVC=[23, 0, 1] | BufferSize=14 | Reason: Missing 11 message(s) from P2 (need VC[2]=2, got 13)
+2025-11-20 01:19:45 - P0 - INFO - RECEIVE: message 10 from P1 | MsgVC=[1, 21, 0] | CurrentVC=[P0:23*, P2:1]
+2025-11-20 01:19:45 - P0 - WARNING - BUFFERED: message 10 from P1 | MsgVC=[1, 21, 0] | CurrentVC=[24, 0, 1] | BufferSize=15 | Reason: Missing 20 message(s) from P1 (need VC[1]=1, got 21)
+2025-11-20 01:19:45 - P0 - INFO - SEND: message 12 to P1 | MsgVC=[24, 0, 1] | CurrentVC=[P0:24*, P2:1]
+2025-11-20 01:19:45 - P0 - INFO - SEND: message 12 to P2 | MsgVC=[25, 0, 1] | CurrentVC=[P0:25*, P2:1]
+2025-11-20 01:19:45 - P0 - INFO - SEND: message 13 to P1 | MsgVC=[26, 0, 1] | CurrentVC=[P0:26*, P2:1]
+2025-11-20 01:19:45 - P0 - INFO - SEND: message 13 to P2 | MsgVC=[27, 0, 1] | CurrentVC=[P0:27*, P2:1]
+2025-11-20 01:19:45 - P0 - INFO - RECEIVE: message 11 from P1 | MsgVC=[1, 23, 0] | CurrentVC=[P0:27*, P2:1]
+2025-11-20 01:19:45 - P0 - WARNING - BUFFERED: message 11 from P1 | MsgVC=[1, 23, 0] | CurrentVC=[27, 0, 1] | BufferSize=16 | Reason: Missing 22 message(s) from P1 (need VC[1]=1, got 23)
+2025-11-20 01:19:46 - P0 - INFO - RECEIVE: message 7 from P2 | MsgVC=[0, 0, 16] | CurrentVC=[P0:27*, P2:1]
+2025-11-20 01:19:46 - P0 - WARNING - BUFFERED: message 7 from P2 | MsgVC=[0, 0, 16] | CurrentVC=[27, 0, 1] | BufferSize=17 | Reason: Missing 14 message(s) from P2 (need VC[2]=2, got 16)
+2025-11-20 01:19:46 - P0 - INFO - SEND: message 14 to P1 | MsgVC=[28, 0, 1] | CurrentVC=[P0:28*, P2:1]
+2025-11-20 01:19:46 - P0 - INFO - SEND: message 14 to P2 | MsgVC=[29, 0, 1] | CurrentVC=[P0:29*, P2:1]
+2025-11-20 01:19:46 - P0 - INFO - RECEIVE: message 12 from P1 | MsgVC=[1, 25, 0] | CurrentVC=[P0:29*, P2:1]
+2025-11-20 01:19:46 - P0 - WARNING - BUFFERED: message 12 from P1 | MsgVC=[1, 25, 0] | CurrentVC=[29, 0, 1] | BufferSize=18 | Reason: Missing 24 message(s) from P1 (need VC[1]=1, got 25)
+2025-11-20 01:19:46 - P0 - INFO - SEND: message 15 to P1 | MsgVC=[30, 0, 1] | CurrentVC=[P0:30*, P2:1]
+2025-11-20 01:19:46 - P0 - INFO - SEND: message 15 to P2 | MsgVC=[31, 0, 1] | CurrentVC=[P0:31*, P2:1]
+2025-11-20 01:19:47 - P0 - INFO - RECEIVE: message 8 from P2 | MsgVC=[0, 0, 18] | CurrentVC=[P0:31*, P2:1]
+2025-11-20 01:19:47 - P0 - WARNING - BUFFERED: message 8 from P2 | MsgVC=[0, 0, 18] | CurrentVC=[31, 0, 1] | BufferSize=19 | Reason: Missing 16 message(s) from P2 (need VC[2]=2, got 18)
+2025-11-20 01:19:47 - P0 - INFO - RECEIVE: message 13 from P1 | MsgVC=[1, 27, 0] | CurrentVC=[P0:31*, P2:1]
+2025-11-20 01:19:47 - P0 - WARNING - BUFFERED: message 13 from P1 | MsgVC=[1, 27, 0] | CurrentVC=[31, 0, 1] | BufferSize=20 | Reason: Missing 26 message(s) from P1 (need VC[1]=1, got 27)
+2025-11-20 01:19:47 - P0 - INFO - SEND: message 16 to P1 | MsgVC=[32, 0, 1] | CurrentVC=[P0:32*, P2:1]
+2025-11-20 01:19:47 - P0 - INFO - SEND: message 16 to P2 | MsgVC=[33, 0, 1] | CurrentVC=[P0:33*, P2:1]
+2025-11-20 01:19:47 - P0 - INFO - RECEIVE: message 14 from P1 | MsgVC=[1, 29, 0] | CurrentVC=[P0:33*, P2:1]
+2025-11-20 01:19:47 - P0 - WARNING - BUFFERED: message 14 from P1 | MsgVC=[1, 29, 0] | CurrentVC=[33, 0, 1] | BufferSize=21 | Reason: Missing 28 message(s) from P1 (need VC[1]=1, got 29)
+2025-11-20 01:19:47 - P0 - INFO - SEND: message 17 to P1 | MsgVC=[34, 0, 1] | CurrentVC=[P0:34*, P2:1]
+2025-11-20 01:19:47 - P0 - INFO - SEND: message 17 to P2 | MsgVC=[35, 0, 1] | CurrentVC=[P0:35*, P2:1]
+2025-11-20 01:19:48 - P0 - INFO - RECEIVE: message 9 from P2 | MsgVC=[0, 0, 20] | CurrentVC=[P0:35*, P2:1]
+2025-11-20 01:19:48 - P0 - WARNING - BUFFERED: message 9 from P2 | MsgVC=[0, 0, 20] | CurrentVC=[35, 0, 1] | BufferSize=22 | Reason: Missing 18 message(s) from P2 (need VC[2]=2, got 20)
+2025-11-20 01:19:48 - P0 - INFO - RECEIVE: message 15 from P1 | MsgVC=[1, 31, 0] | CurrentVC=[P0:35*, P2:1]
+2025-11-20 01:19:48 - P0 - WARNING - BUFFERED: message 15 from P1 | MsgVC=[1, 31, 0] | CurrentVC=[35, 0, 1] | BufferSize=23 | Reason: Missing 30 message(s) from P1 (need VC[1]=1, got 31)
+2025-11-20 01:19:48 - P0 - INFO - SEND: message 18 to P1 | MsgVC=[36, 0, 1] | CurrentVC=[P0:36*, P2:1]
+2025-11-20 01:19:48 - P0 - INFO - SEND: message 18 to P2 | MsgVC=[37, 0, 1] | CurrentVC=[P0:37*, P2:1]
+2025-11-20 01:19:48 - P0 - INFO - SEND: message 19 to P1 | MsgVC=[38, 0, 1] | CurrentVC=[P0:38*, P2:1]
+2025-11-20 01:19:48 - P0 - INFO - RECEIVE: message 16 from P1 | MsgVC=[1, 33, 0] | CurrentVC=[P0:38*, P2:1]
+2025-11-20 01:19:48 - P0 - WARNING - BUFFERED: message 16 from P1 | MsgVC=[1, 33, 0] | CurrentVC=[38, 0, 1] | BufferSize=24 | Reason: Missing 32 message(s) from P1 (need VC[1]=1, got 33)
+2025-11-20 01:19:49 - P0 - INFO - RECEIVE: message 10 from P2 | MsgVC=[0, 0, 23] | CurrentVC=[P0:38*, P2:1]
+2025-11-20 01:19:49 - P0 - WARNING - BUFFERED: message 10 from P2 | MsgVC=[0, 0, 23] | CurrentVC=[38, 0, 1] | BufferSize=25 | Reason: Missing 21 message(s) from P2 (need VC[2]=2, got 23)
+2025-11-20 01:19:49 - P0 - INFO - SEND: message 19 to P2 | MsgVC=[39, 0, 1] | CurrentVC=[P0:39*, P2:1]
+2025-11-20 01:19:49 - P0 - INFO - SEND: message 20 to P1 | MsgVC=[40, 0, 1] | CurrentVC=[P0:40*, P2:1]
+2025-11-20 01:19:49 - P0 - INFO - RECEIVE: message 17 from P1 | MsgVC=[1, 35, 0] | CurrentVC=[P0:40*, P2:1]
+2025-11-20 01:19:49 - P0 - WARNING - BUFFERED: message 17 from P1 | MsgVC=[1, 35, 0] | CurrentVC=[40, 0, 1] | BufferSize=26 | Reason: Missing 34 message(s) from P1 (need VC[1]=1, got 35)
+2025-11-20 01:19:49 - P0 - INFO - SEND: message 20 to P2 | MsgVC=[41, 0, 1] | CurrentVC=[P0:41*, P2:1]
+2025-11-20 01:19:49 - P0 - INFO - SEND: message 21 to P1 | MsgVC=[42, 0, 1] | CurrentVC=[P0:42*, P2:1]
+2025-11-20 01:19:49 - P0 - INFO - RECEIVE: message 11 from P2 | MsgVC=[0, 0, 25] | CurrentVC=[P0:42*, P2:1]
+2025-11-20 01:19:49 - P0 - WARNING - BUFFERED: message 11 from P2 | MsgVC=[0, 0, 25] | CurrentVC=[42, 0, 1] | BufferSize=27 | Reason: Missing 23 message(s) from P2 (need VC[2]=2, got 25)
+2025-11-20 01:19:50 - P0 - INFO - RECEIVE: message 18 from P1 | MsgVC=[1, 37, 0] | CurrentVC=[P0:43*, P2:1]
+2025-11-20 01:19:50 - P0 - WARNING - BUFFERED: message 18 from P1 | MsgVC=[1, 37, 0] | CurrentVC=[43, 0, 1] | BufferSize=28 | Reason: Missing 36 message(s) from P1 (need VC[1]=1, got 37)
+2025-11-20 01:19:50 - P0 - INFO - SEND: message 21 to P2 | MsgVC=[43, 0, 1] | CurrentVC=[P0:43*, P2:1]
+2025-11-20 01:19:50 - P0 - INFO - SEND: message 22 to P1 | MsgVC=[44, 0, 1] | CurrentVC=[P0:44*, P2:1]
+2025-11-20 01:19:50 - P0 - INFO - SEND: message 22 to P2 | MsgVC=[45, 0, 1] | CurrentVC=[P0:45*, P2:1]
+2025-11-20 01:19:50 - P0 - INFO - RECEIVE: message 19 from P1 | MsgVC=[1, 39, 0] | CurrentVC=[P0:45*, P2:1]
+2025-11-20 01:19:50 - P0 - WARNING - BUFFERED: message 19 from P1 | MsgVC=[1, 39, 0] | CurrentVC=[45, 0, 1] | BufferSize=29 | Reason: Missing 38 message(s) from P1 (need VC[1]=1, got 39)
+2025-11-20 01:19:50 - P0 - INFO - SEND: message 23 to P1 | MsgVC=[46, 0, 1] | CurrentVC=[P0:46*, P2:1]
+2025-11-20 01:19:50 - P0 - INFO - RECEIVE: message 12 from P2 | MsgVC=[0, 0, 27] | CurrentVC=[P0:46*, P2:1]
+2025-11-20 01:19:50 - P0 - WARNING - BUFFERED: message 12 from P2 | MsgVC=[0, 0, 27] | CurrentVC=[46, 0, 1] | BufferSize=30 | Reason: Missing 25 message(s) from P2 (need VC[2]=2, got 27)
+2025-11-20 01:19:51 - P0 - INFO - SEND: message 23 to P2 | MsgVC=[47, 0, 1] | CurrentVC=[P0:47*, P2:1]
+2025-11-20 01:19:51 - P0 - INFO - RECEIVE: message 20 from P1 | MsgVC=[1, 41, 0] | CurrentVC=[P0:47*, P2:1]
+2025-11-20 01:19:51 - P0 - WARNING - BUFFERED: message 20 from P1 | MsgVC=[1, 41, 0] | CurrentVC=[47, 0, 1] | BufferSize=31 | Reason: Missing 40 message(s) from P1 (need VC[1]=1, got 41)
+2025-11-20 01:19:51 - P0 - INFO - SEND: message 24 to P1 | MsgVC=[48, 0, 1] | CurrentVC=[P0:48*, P2:1]
+2025-11-20 01:19:51 - P0 - INFO - SEND: message 24 to P2 | MsgVC=[49, 0, 1] | CurrentVC=[P0:49*, P2:1]
+2025-11-20 01:19:51 - P0 - INFO - RECEIVE: message 13 from P2 | MsgVC=[0, 0, 30] | CurrentVC=[P0:49*, P2:1]
+2025-11-20 01:19:51 - P0 - WARNING - BUFFERED: message 13 from P2 | MsgVC=[0, 0, 30] | CurrentVC=[49, 0, 1] | BufferSize=32 | Reason: Missing 28 message(s) from P2 (need VC[2]=2, got 30)
+2025-11-20 01:19:51 - P0 - INFO - RECEIVE: message 21 from P1 | MsgVC=[1, 43, 0] | CurrentVC=[P0:49*, P2:1]
+2025-11-20 01:19:51 - P0 - WARNING - BUFFERED: message 21 from P1 | MsgVC=[1, 43, 0] | CurrentVC=[49, 0, 1] | BufferSize=33 | Reason: Missing 42 message(s) from P1 (need VC[1]=1, got 43)
+2025-11-20 01:19:51 - P0 - INFO - SEND: message 25 to P1 | MsgVC=[50, 0, 1] | CurrentVC=[P0:50*, P2:1]
+2025-11-20 01:19:52 - P0 - INFO - SEND: message 25 to P2 | MsgVC=[51, 0, 1] | CurrentVC=[P0:51*, P2:1]
+2025-11-20 01:19:52 - P0 - INFO - SEND: message 26 to P1 | MsgVC=[52, 0, 1] | CurrentVC=[P0:52*, P2:1]
+2025-11-20 01:19:52 - P0 - INFO - RECEIVE: message 22 from P1 | MsgVC=[1, 45, 0] | CurrentVC=[P0:52*, P2:1]
+2025-11-20 01:19:52 - P0 - WARNING - BUFFERED: message 22 from P1 | MsgVC=[1, 45, 0] | CurrentVC=[52, 0, 1] | BufferSize=34 | Reason: Missing 44 message(s) from P1 (need VC[1]=1, got 45)
+2025-11-20 01:19:52 - P0 - INFO - SEND: message 26 to P2 | MsgVC=[53, 0, 1] | CurrentVC=[P0:53*, P2:1]
+2025-11-20 01:19:52 - P0 - INFO - RECEIVE: message 14 from P2 | MsgVC=[0, 0, 32] | CurrentVC=[P0:53*, P2:1]
+2025-11-20 01:19:52 - P0 - WARNING - BUFFERED: message 14 from P2 | MsgVC=[0, 0, 32] | CurrentVC=[53, 0, 1] | BufferSize=35 | Reason: Missing 30 message(s) from P2 (need VC[2]=2, got 32)
+2025-11-20 01:19:53 - P0 - INFO - SEND: message 27 to P1 | MsgVC=[54, 0, 1] | CurrentVC=[P0:54*, P2:1]
+2025-11-20 01:19:53 - P0 - INFO - RECEIVE: message 23 from P1 | MsgVC=[1, 48, 0] | CurrentVC=[P0:54*, P2:1]
+2025-11-20 01:19:53 - P0 - WARNING - BUFFERED: message 23 from P1 | MsgVC=[1, 48, 0] | CurrentVC=[54, 0, 1] | BufferSize=36 | Reason: Missing 47 message(s) from P1 (need VC[1]=1, got 48)
+2025-11-20 01:19:53 - P0 - INFO - SEND: message 27 to P2 | MsgVC=[55, 0, 1] | CurrentVC=[P0:55*, P2:1]
+2025-11-20 01:19:53 - P0 - INFO - SEND: message 28 to P1 | MsgVC=[56, 0, 1] | CurrentVC=[P0:56*, P2:1]
+2025-11-20 01:19:53 - P0 - INFO - RECEIVE: message 24 from P1 | MsgVC=[1, 50, 0] | CurrentVC=[P0:56*, P2:1]
+2025-11-20 01:19:53 - P0 - WARNING - BUFFERED: message 24 from P1 | MsgVC=[1, 50, 0] | CurrentVC=[56, 0, 1] | BufferSize=37 | Reason: Missing 49 message(s) from P1 (need VC[1]=1, got 50)
+2025-11-20 01:19:53 - P0 - INFO - SEND: message 28 to P2 | MsgVC=[57, 0, 1] | CurrentVC=[P0:57*, P2:1]
+2025-11-20 01:19:53 - P0 - INFO - RECEIVE: message 15 from P2 | MsgVC=[0, 0, 34] | CurrentVC=[P0:57*, P2:1]
+2025-11-20 01:19:53 - P0 - WARNING - BUFFERED: message 15 from P2 | MsgVC=[0, 0, 34] | CurrentVC=[57, 0, 1] | BufferSize=38 | Reason: Missing 32 message(s) from P2 (need VC[2]=2, got 34)
+2025-11-20 01:19:54 - P0 - INFO - SEND: message 29 to P1 | MsgVC=[58, 0, 1] | CurrentVC=[P0:58*, P2:1]
+2025-11-20 01:19:54 - P0 - INFO - SEND: message 29 to P2 | MsgVC=[59, 0, 1] | CurrentVC=[P0:59*, P2:1]
+2025-11-20 01:19:54 - P0 - INFO - RECEIVE: message 25 from P1 | MsgVC=[1, 52, 0] | CurrentVC=[P0:59*, P2:1]
+2025-11-20 01:19:54 - P0 - WARNING - BUFFERED: message 25 from P1 | MsgVC=[1, 52, 0] | CurrentVC=[59, 0, 1] | BufferSize=39 | Reason: Missing 51 message(s) from P1 (need VC[1]=1, got 52)
+2025-11-20 01:19:54 - P0 - INFO - SEND: message 30 to P1 | MsgVC=[60, 0, 1] | CurrentVC=[P0:60*, P2:1]
+2025-11-20 01:19:54 - P0 - INFO - SEND: message 30 to P2 | MsgVC=[61, 0, 1] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:54 - P0 - INFO - RECEIVE: message 16 from P2 | MsgVC=[0, 0, 37] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:54 - P0 - WARNING - BUFFERED: message 16 from P2 | MsgVC=[0, 0, 37] | CurrentVC=[61, 0, 1] | BufferSize=40 | Reason: Missing 35 message(s) from P2 (need VC[2]=2, got 37)
+2025-11-20 01:19:54 - P0 - INFO - RECEIVE: message 26 from P1 | MsgVC=[1, 54, 0] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:54 - P0 - WARNING - BUFFERED: message 26 from P1 | MsgVC=[1, 54, 0] | CurrentVC=[61, 0, 1] | BufferSize=41 | Reason: Missing 53 message(s) from P1 (need VC[1]=1, got 54)
+2025-11-20 01:19:55 - P0 - DEBUG - Finished sending 30 messages to P1
+2025-11-20 01:19:55 - P0 - DEBUG - Finished sending 30 messages to P2
+2025-11-20 01:19:55 - P0 - INFO - RECEIVE: message 27 from P1 | MsgVC=[1, 56, 0] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:55 - P0 - WARNING - BUFFERED: message 27 from P1 | MsgVC=[1, 56, 0] | CurrentVC=[61, 0, 1] | BufferSize=42 | Reason: Missing 55 message(s) from P1 (need VC[1]=1, got 56)
+2025-11-20 01:19:55 - P0 - INFO - RECEIVE: message 17 from P2 | MsgVC=[0, 0, 39] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:55 - P0 - WARNING - BUFFERED: message 17 from P2 | MsgVC=[0, 0, 39] | CurrentVC=[61, 0, 1] | BufferSize=43 | Reason: Missing 37 message(s) from P2 (need VC[2]=2, got 39)
+2025-11-20 01:19:56 - P0 - INFO - RECEIVE: message 28 from P1 | MsgVC=[1, 58, 0] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:56 - P0 - WARNING - BUFFERED: message 28 from P1 | MsgVC=[1, 58, 0] | CurrentVC=[61, 0, 1] | BufferSize=44 | Reason: Missing 57 message(s) from P1 (need VC[1]=1, got 58)
+2025-11-20 01:19:56 - P0 - INFO - RECEIVE: message 29 from P1 | MsgVC=[1, 60, 0] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:56 - P0 - WARNING - BUFFERED: message 29 from P1 | MsgVC=[1, 60, 0] | CurrentVC=[61, 0, 1] | BufferSize=45 | Reason: Missing 59 message(s) from P1 (need VC[1]=1, got 60)
+2025-11-20 01:19:56 - P0 - INFO - RECEIVE: message 18 from P2 | MsgVC=[0, 0, 41] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:56 - P0 - WARNING - BUFFERED: message 18 from P2 | MsgVC=[0, 0, 41] | CurrentVC=[61, 0, 1] | BufferSize=46 | Reason: Missing 39 message(s) from P2 (need VC[2]=2, got 41)
+2025-11-20 01:19:57 - P0 - INFO - RECEIVE: message 30 from P1 | MsgVC=[1, 61, 0] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:57 - P0 - WARNING - BUFFERED: message 30 from P1 | MsgVC=[1, 61, 0] | CurrentVC=[61, 0, 1] | BufferSize=47 | Reason: Missing 60 message(s) from P1 (need VC[1]=1, got 61)
+2025-11-20 01:19:57 - P0 - INFO - RECEIVE: message 19 from P2 | MsgVC=[0, 0, 43] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:57 - P0 - WARNING - BUFFERED: message 19 from P2 | MsgVC=[0, 0, 43] | CurrentVC=[61, 0, 1] | BufferSize=48 | Reason: Missing 41 message(s) from P2 (need VC[2]=2, got 43)
+2025-11-20 01:19:58 - P0 - INFO - RECEIVE: message 20 from P2 | MsgVC=[0, 0, 46] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:58 - P0 - WARNING - BUFFERED: message 20 from P2 | MsgVC=[0, 0, 46] | CurrentVC=[61, 0, 1] | BufferSize=49 | Reason: Missing 44 message(s) from P2 (need VC[2]=2, got 46)
+2025-11-20 01:19:59 - P0 - INFO - RECEIVE: message 21 from P2 | MsgVC=[0, 0, 48] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:19:59 - P0 - WARNING - BUFFERED: message 21 from P2 | MsgVC=[0, 0, 48] | CurrentVC=[61, 0, 1] | BufferSize=50 | Reason: Missing 46 message(s) from P2 (need VC[2]=2, got 48)
+2025-11-20 01:20:00 - P0 - INFO - RECEIVE: message 22 from P2 | MsgVC=[0, 0, 50] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:20:00 - P0 - WARNING - BUFFERED: message 22 from P2 | MsgVC=[0, 0, 50] | CurrentVC=[61, 0, 1] | BufferSize=51 | Reason: Missing 48 message(s) from P2 (need VC[2]=2, got 50)
+2025-11-20 01:20:01 - P0 - INFO - RECEIVE: message 23 from P2 | MsgVC=[0, 0, 53] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:20:01 - P0 - WARNING - BUFFERED: message 23 from P2 | MsgVC=[0, 0, 53] | CurrentVC=[61, 0, 1] | BufferSize=52 | Reason: Missing 51 message(s) from P2 (need VC[2]=2, got 53)
+2025-11-20 01:20:02 - P0 - INFO - RECEIVE: message 24 from P2 | MsgVC=[0, 0, 54] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:20:02 - P0 - WARNING - BUFFERED: message 24 from P2 | MsgVC=[0, 0, 54] | CurrentVC=[61, 0, 1] | BufferSize=53 | Reason: Missing 52 message(s) from P2 (need VC[2]=2, got 54)
+2025-11-20 01:20:03 - P0 - INFO - RECEIVE: message 25 from P2 | MsgVC=[0, 0, 55] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:20:03 - P0 - WARNING - BUFFERED: message 25 from P2 | MsgVC=[0, 0, 55] | CurrentVC=[61, 0, 1] | BufferSize=54 | Reason: Missing 53 message(s) from P2 (need VC[2]=2, got 55)
+2025-11-20 01:20:04 - P0 - INFO - RECEIVE: message 26 from P2 | MsgVC=[0, 0, 56] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:20:04 - P0 - WARNING - BUFFERED: message 26 from P2 | MsgVC=[0, 0, 56] | CurrentVC=[61, 0, 1] | BufferSize=55 | Reason: Missing 54 message(s) from P2 (need VC[2]=2, got 56)
+2025-11-20 01:20:05 - P0 - INFO - RECEIVE: message 27 from P2 | MsgVC=[0, 0, 57] | CurrentVC=[P0:61*, P2:1]
+2025-11-20 01:20:05 - P0 - WARNING - BUFFERED: message 27 from P2 | MsgVC=[0, 0, 57] | CurrentVC=[61, 0, 1] | BufferSize=56 | Reason: Missing 55 message(s) from P2 (need VC[2]=2, got 57)

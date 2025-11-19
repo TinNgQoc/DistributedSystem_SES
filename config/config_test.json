@@ -1,0 +1,13 @@
+{
+  "num_processes": 3,
+  "messages_per_process": 30,
+  "base_port": 5000,
+  "host": "127.0.0.1",
+  "message_rate_min": 60,
+  "message_rate_max": 120,
+  "processes": [
+    {"id": 0, "host": "127.0.0.1", "port": 5000},
+    {"id": 1, "host": "127.0.0.1", "port": 5001},
+    {"id": 2, "host": "127.0.0.1", "port": 5002}
+  ]
+}
