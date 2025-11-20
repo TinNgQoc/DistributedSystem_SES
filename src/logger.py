@@ -79,113 +79,130 @@ class SESLogger:
         with self.lock:
             self.logger.info(message)
     
-    def log_send(self, message, current_vc):
+    def log_send(self, message, current_t):
         """
-        Ghi log khi gửi message
+        Ghi log khi gửi message theo SES
         
         Args:
             message: Message được gửi
-            current_vc: Vector clock hiện tại
+            current_t: Local time hiện tại
         """
         with self.lock:
-            # Tạo string giải thích vector clock
-            vc_explain = self._format_vc_explanation(current_vc, message.sender_id)
             self.logger.info(
                 f"SEND: {message.content} to P{message.receiver_id} | "
-                f"MsgVC={message.vector_clock} | {vc_explain}"
+                f"tm={message.tm} | V_M={message.v_m} | t_P={current_t}"
             )
     
-    def log_receive(self, message, current_vc_before):
+    def log_receive(self, message, current_t):
         """
-        Ghi log khi nhận message
+        Ghi log khi nhận message theo SES
         
         Args:
             message: Message nhận được
-            current_vc_before: Vector clock trước khi nhận
+            current_t: Local time hiện tại
         """
         with self.lock:
-            vc_explain = self._format_vc_explanation(current_vc_before, self.process_id)
             self.logger.info(
                 f"RECEIVE: {message.content} from P{message.sender_id} | "
-                f"MsgVC={message.vector_clock} | {vc_explain}"
+                f"tm={message.tm} | V_M={message.v_m} | t_P={current_t}"
             )
     
-    def log_buffer(self, message, buffer_size, current_vc, reason=""):
+    def log_buffer(self, message, buffer_size, current_t_p=None):
         """
-        Ghi log khi message bị buffer
+        Ghi log khi message bị buffer theo SES
         
         Args:
             message: Message bị buffer
             buffer_size: Kích thước buffer hiện tại
-            current_vc: Vector clock hiện tại
-            reason: Lý do cụ thể phải buffer
+            current_t_p: Vector timestamp hiện tại của receiver (optional)
         """
         with self.lock:
+            # Check if V_M contains receiver_id to explain why buffered
+            if message.receiver_id in message.v_m:
+                t_in_vm = message.v_m[message.receiver_id]
+                reason_parts = [f"V_M contains (P{message.receiver_id}, {t_in_vm})"]
+                
+                # If we have current_t_p, show the comparison
+                if current_t_p is not None:
+                    # Find which component(s) caused buffering
+                    greater_components = []
+                    for i in range(len(t_in_vm)):
+                        if t_in_vm[i] > current_t_p[i]:
+                            greater_components.append(f"t[{i}]={t_in_vm[i]} > t_P[{i}]={current_t_p[i]}")
+                    
+                    if greater_components:
+                        reason_parts.append(f"Condition: {' AND '.join(greater_components)}")
+                        reason_parts.append(f"Current t_P={current_t_p}")
+                
+                reason = " | ".join(reason_parts)
+            else:
+                reason = "No causal dependency on receiver in V_M"
+            
             self.logger.warning(
-                f"BUFFERED: {message.content} from P{message.sender_id} | "
-                f"MsgVC={message.vector_clock} | CurrentVC={current_vc} | "
+                f"🔶 BUFFERED: {message.content} from P{message.sender_id} | "
+                f"MsgID={message.message_id} | tm={message.tm} | V_M={message.v_m} | "
                 f"BufferSize={buffer_size} | Reason: {reason}"
             )
     
-    def log_delivery(self, message, old_vc, new_vc, from_buffer=False):
+    def log_delivery(self, message, current_t, from_buffer=False):
         """
-        Ghi log khi deliver message
+        Ghi log khi deliver message theo SES
         
         Args:
             message: Message được deliver
-            old_vc: Vector clock trước khi deliver
-            new_vc: Vector clock sau khi deliver
+            current_t: Local time sau khi deliver
             from_buffer: True nếu message được deliver từ buffer
         """
         with self.lock:
-            source = "BUFFER" if from_buffer else "DIRECT"
-            
-            # Hiển thị sự thay đổi của vector clock
-            changes = []
-            for i in range(len(old_vc)):
-                if old_vc[i] != new_vc[i]:
-                    changes.append(f"P{i}:{old_vc[i]}→{new_vc[i]}")
-            
-            change_str = ", ".join(changes) if changes else "No change"
+            if from_buffer:
+                icon = "📦➡️✅"
+                source = "BUFFER"
+            else:
+                icon = "✅"
+                source = "DIRECT"
             
             self.logger.info(
-                f"DELIVERED ({source}): {message.content} from P{message.sender_id} | "
-                f"MsgVC={message.vector_clock} | "
-                f"VC_Changes=[{change_str}] | "
-                f"NewVC={new_vc}"
+                f"{icon} DELIVERED ({source}): {message.content} from P{message.sender_id} | "
+                f"MsgID={message.message_id} | tm={message.tm} | V_M={message.v_m} | "
+                f"New t_P={current_t}"
             )
     
-    def log_vc_update(self, old_vc, new_vc, reason=""):
+    def log_vc_update(self, old_t, new_t, reason=""):
         """
-        Ghi log khi vector clock được cập nhật
+        Ghi log khi local time được cập nhật theo SES
         
         Args:
-            old_vc: Vector clock trước khi cập nhật
-            new_vc: Vector clock sau khi cập nhật
+            old_t: Local time trước khi cập nhật
+            new_t: Local time sau khi cập nhật
             reason: Lý do cập nhật
         """
         with self.lock:
             self.logger.debug(
-                f"VC_UPDATE: {old_vc} -> {new_vc} | Reason: {reason}"
+                f"TIME_UPDATE: t_P: {old_t} -> {new_t} | Reason: {reason}"
             )
     
-    def log_buffer_check(self, trigger_message, buffer_size, deliverable_count, deliverable_messages):
+    def log_buffer_check(self, buffer_size_before, deliverable_count, current_t_p=None):
         """
         Ghi log khi kiểm tra buffer
         
         Args:
-            trigger_message: Message vừa được deliver (trigger việc check buffer)
-            buffer_size: Kích thước buffer hiện tại
+            buffer_size_before: Kích thước buffer trước khi check
             deliverable_count: Số messages có thể deliver
-            deliverable_messages: List các messages có thể deliver
+            current_t_p: Vector timestamp hiện tại của process (optional)
         """
-        if deliverable_count > 0:
-            with self.lock:
-                msg_list = ", ".join([f"{m.content} from P{m.sender_id}" for m in deliverable_messages])
+        with self.lock:
+            if deliverable_count > 0:
+                t_p_str = f" | t_P={current_t_p}" if current_t_p else ""
                 self.logger.info(
-                    f"BUFFER_RELEASE: After delivering [{trigger_message.content} from P{trigger_message.sender_id}], "
-                    f"{deliverable_count} buffered message(s) can now be delivered: [{msg_list}] | "
-                    f"Remaining in buffer: {buffer_size}"
+                    f"🔍 BUFFER_CHECK: Found {deliverable_count} deliverable message(s) | "
+                    f"Buffer before: {buffer_size_before} | "
+                    f"After delivery: {buffer_size_before - deliverable_count}{t_p_str}"
+                )
+            elif buffer_size_before > 0:
+                t_p_str = f" | t_P={current_t_p}" if current_t_p else ""
+                self.logger.debug(
+                    f"🔍 BUFFER_CHECK: No deliverable messages yet | "
+                    f"Buffer size: {buffer_size_before}{t_p_str}"
                 )
     
     def log_statistics(self, stats):
@@ -223,31 +240,3 @@ class SESLogger:
         """
         with self.lock:
             self.logger.debug(message)
-    
-    def _format_vc_explanation(self, vc, highlight_pid):
-        """
-        Tạo chuỗi giải thích vector clock với highlight
-        
-        Args:
-            vc: Vector clock
-            highlight_pid: Process ID cần highlight
-            
-        Returns:
-            String giải thích
-        """
-        # Chỉ hiển thị các process có giá trị > 0 hoặc process hiện tại
-        important = []
-        for i in range(min(15, len(vc))):  # Giới hạn 15 processes
-            if vc[i] > 0 or i == highlight_pid:
-                marker = "*" if i == highlight_pid else ""
-                important.append(f"P{i}:{vc[i]}{marker}")
-        
-        if len(important) <= 5:
-            return f"CurrentVC=[{', '.join(important)}]"
-        else:
-            # Nếu quá nhiều, chỉ hiển thị 3 đầu + highlight + 2 cuối
-            shown = important[:3]
-            if highlight_pid not in [i for i in range(3)]:
-                shown.append(f"P{highlight_pid}:{vc[highlight_pid]}*")
-            shown.extend(important[-2:])
-            return f"CurrentVC=[{', '.join(shown)}, ...]"

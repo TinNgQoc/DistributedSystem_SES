@@ -9,7 +9,7 @@ import json
 import pickle
 import time
 import random
-from vector_clock import VectorClock
+from vector_clock import SESVector
 from message_buffer import Message, MessageBuffer
 from logger import SESLogger
 
@@ -35,8 +35,8 @@ class SESProcess:
         self.host = config['processes'][process_id]['host']
         self.port = config['processes'][process_id]['port']
         
-        # Khởi tạo vector clock
-        self.vector_clock = VectorClock(self.num_processes, process_id)
+        # Khởi tạo SES Vector structure
+        self.ses_vector = SESVector(self.num_processes, process_id)
         
         # Khởi tạo logger
         self.logger = SESLogger(process_id)
@@ -151,7 +151,14 @@ class SESProcess:
     
     def _send_messages_to_process(self, target_pid):
         """
-        Gửi messages đến một process cụ thể
+        Gửi messages đến một process cụ thể theo SES Algorithm
+        
+        SES Send Protocol:
+        1. Increment vector timestamp
+        2. Get tm = current vector timestamp
+        3. Prepare V_M = V_P excluding (target_pid, t)
+        4. Send message with tm and V_M
+        5. Add (target_pid, tm) to V_P (not sent in message!)
         
         Args:
             target_pid: ID của process đích
@@ -175,13 +182,20 @@ class SESProcess:
             if not self.running:
                 break
             
-            # Tạo message
+            # Tạo message theo SES protocol
             content = f"message {i+1}"
             
             with self.vc_lock:
-                # Tăng vector clock trước khi gửi
-                self.vector_clock.increment()
-                current_vc = self.vector_clock.get_clock()
+                # Increment vector timestamp before sending
+                self.ses_vector.increment_local_time()
+                tm = self.ses_vector.get_local_time()  # Get vector copy
+                
+                # Get V_M = full copy of V_P BEFORE adding destination
+                # This is the key: V_M includes all entries in V_P except the one being added now
+                v_m = self.ses_vector.get_v_p_copy()
+                
+                # Add (target_pid, tm) to V_P AFTER preparing V_M (not sent in message)
+                self.ses_vector.add_destination(target_pid, tm)
             
             with self.stats_lock:
                 self.message_id_counter += 1
@@ -191,7 +205,8 @@ class SESProcess:
                 sender_id=self.process_id,
                 receiver_id=target_pid,
                 content=content,
-                vector_clock=current_vc,
+                tm=tm,
+                v_m=v_m,
                 message_id=msg_id
             )
             
@@ -229,8 +244,8 @@ class SESProcess:
                 
                 # Log và cập nhật thống kê
                 with self.vc_lock:
-                    current_vc = self.vector_clock.get_clock()
-                self.logger.log_send(message, current_vc)
+                    current_t = self.ses_vector.get_local_time()
+                self.logger.log_send(message, current_t)
                 
                 with self.stats_lock:
                     self.sent_count += 1
@@ -251,6 +266,16 @@ class SESProcess:
         """
         Nhận và xử lý message theo thuật toán SES
         
+        SES Receive/Deliver Protocol:
+        1. If V_M does not contain (receiver_id, t): deliver message
+        2. If V_M contains (receiver_id, t):
+           - If tm > t_receiver: buffer message (don't deliver)
+           - If tm <= t_receiver: deliver message
+        3. When delivering:
+           - Merge V_M with V_P
+           - Update local clock
+           - Check buffered messages
+        
         Args:
             message: Message nhận được
         """
@@ -258,40 +283,57 @@ class SESProcess:
             self.received_count += 1
         
         with self.vc_lock:
-            current_vc = self.vector_clock.get_clock()
+            current_t = self.ses_vector.get_local_time()
+            current_v_p = self.ses_vector.get_v_p_copy()
         
-        self.logger.log_receive(message, current_vc)
+        self.logger.log_receive(message, current_t)
         
-        # Kiểm tra xem có thể deliver ngay không
+        # Kiểm tra xem có thể deliver ngay không theo SES rules
         with self.vc_lock:
-            if self.message_buffer.check_deliverable(message, self.vector_clock.get_clock()):
+            if self.message_buffer.check_deliverable(
+                message, 
+                self.process_id, 
+                self.ses_vector.get_v_p_copy(),
+                self.ses_vector.get_local_time()
+            ):
                 # Deliver ngay
                 self._deliver_message(message, from_buffer=False)
                 
                 # Kiểm tra buffer xem có messages nào có thể deliver không
-                self._check_and_deliver_from_buffer(message)
+                self._check_and_deliver_from_buffer()
             else:
                 # Phải buffer message
-                current_vc = self.vector_clock.get_clock()
-                self.message_buffer.add_message(message, current_vc)
+                self.message_buffer.add_message(message)
     
     def _deliver_message(self, message, from_buffer=False):
         """
-        Deliver message và cập nhật vector clock
+        Deliver message và cập nhật theo SES algorithm
+        
+        When delivering:
+        1. Merge V_M with V_P (component-wise maximum)
+        2. Update vector timestamp (component-wise max + increment)
+        3. Check buffered messages for delivery
         
         Args:
             message: Message cần deliver
             from_buffer: True nếu message từ buffer
         """
-        # Lưu vector clock cũ
-        old_vc = self.vector_clock.get_clock()
+        # Get old state for logging
+        old_t = self.ses_vector.get_local_time()
+        old_v_p = self.ses_vector.get_v_p_copy()
         
-        # Cập nhật vector clock
-        self.vector_clock.update(message.vector_clock)
-        new_vc = self.vector_clock.get_clock()
+        # Merge V_M from message with local V_P
+        self.ses_vector.merge_v_m(message.v_m)
         
-        # Log delivery với cả old và new VC
-        self.logger.log_delivery(message, old_vc, new_vc, from_buffer)
+        # Update vector timestamp (standard vector clock update)
+        self.ses_vector.update_local_time(message.tm)
+        
+        new_t = self.ses_vector.get_local_time()
+        new_v_p = self.ses_vector.get_v_p_copy()
+        
+        # Log delivery
+        self.logger.log_delivery(message, new_t, from_buffer)
+        self.logger.log_vc_update(old_t, new_t, f"Delivered message from P{message.sender_id}")
         
         # Cập nhật thống kê
         with self.stats_lock:
@@ -299,32 +341,44 @@ class SESProcess:
         
         message.delivered = True
     
-    def _check_and_deliver_from_buffer(self, trigger_message):
+    def _check_and_deliver_from_buffer(self):
         """
         Kiểm tra buffer và deliver các messages có thể deliver
-        
-        Args:
-            trigger_message: Message vừa được deliver (trigger việc check buffer)
+        Message is not delivered until t in V_M is less than t in V_P
         """
+        iteration = 0
         while True:
+            iteration += 1
+            buffer_size_before = self.message_buffer.get_buffer_size()
+            
+            # Nếu buffer rỗng, không cần kiểm tra
+            if buffer_size_before == 0:
+                break
+            
             deliverable_messages = self.message_buffer.get_deliverable_messages(
-                self.vector_clock.get_clock()
+                self.process_id,
+                self.ses_vector.get_v_p_copy(),
+                self.ses_vector.get_local_time()
             )
             
             if not deliverable_messages:
+                # Log khi buffer còn messages nhưng chưa thể deliver
+                if buffer_size_before > 0:
+                    current_t = self.ses_vector.get_local_time()
+                    self.logger.log_buffer_check(buffer_size_before, 0, current_t)
                 break
             
+            # Log kiểm tra buffer thành công
+            current_t = self.ses_vector.get_local_time()
             self.logger.log_buffer_check(
-                trigger_message,
-                self.message_buffer.get_buffer_size(),
+                buffer_size_before, 
                 len(deliverable_messages),
-                deliverable_messages
+                current_t
             )
             
+            # Deliver tất cả messages có thể deliver
             for msg in deliverable_messages:
                 self._deliver_message(msg, from_buffer=True)
-                # Update trigger message for next iteration
-                trigger_message = msg
     
     def get_statistics(self):
         """
@@ -343,7 +397,8 @@ class SESProcess:
                 'buffer_size': buffer_stats['current_buffer_size'],
                 'total_buffered': buffer_stats['total_buffered'],
                 'total_delivered_from_buffer': buffer_stats['total_delivered'],
-                'vector_clock': self.vector_clock.get_clock()
+                'vector_time': self.ses_vector.get_local_time(),
+                'v_p_size': len(self.ses_vector.v_p)
             }
     
     def print_statistics(self):
@@ -360,7 +415,8 @@ class SESProcess:
         print(f"Current Buffer Size:          {stats['buffer_size']}")
         print(f"Total Messages Buffered:      {stats['total_buffered']}")
         print(f"Delivered from Buffer:        {stats['total_delivered_from_buffer']}")
-        print(f"Vector Clock:                 {stats['vector_clock']}")
+        print(f"Vector Time:                  {stats['vector_time']}")
+        print(f"V_P Size:                     {stats['v_p_size']}")
         print(f"{'='*60}\n")
         
         self.logger.log_statistics(stats)

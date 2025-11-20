@@ -8,30 +8,33 @@ from datetime import datetime
 
 class Message:
     """
-    Đại diện cho một message trong hệ thống phân tán
+    Message structure for SES Algorithm
+    Contains: sender, receiver, content, tm (send timestamp vector), V_M
     """
     
-    def __init__(self, sender_id, receiver_id, content, vector_clock, message_id):
+    def __init__(self, sender_id, receiver_id, content, tm, v_m, message_id):
         """
-        Khởi tạo message
+        Initialize SES message
         
         Args:
-            sender_id: ID của process gửi
-            receiver_id: ID của process nhận
-            content: Nội dung message
-            vector_clock: Vector clock tại thời điểm gửi
-            message_id: ID duy nhất của message
+            sender_id: ID of sending process
+            receiver_id: ID of receiving process
+            content: Message content
+            tm: Vector timestamp when message was sent (list of N integers)
+            v_m: V_P structure from sender (dictionary {pid: vector})
+            message_id: Unique message identifier
         """
         self.sender_id = sender_id
         self.receiver_id = receiver_id
         self.content = content
-        self.vector_clock = vector_clock
+        self.tm = tm.copy() if isinstance(tm, list) else tm  # Vector timestamp at send time
+        self.v_m = v_m  # V_P from sender
         self.message_id = message_id
-        self.timestamp = datetime.now()
+        self.timestamp = datetime.now()  # Physical timestamp
         self.delivered = False
     
     def __str__(self):
-        return f"Msg[{self.message_id}] from P{self.sender_id}->P{self.receiver_id}: '{self.content}' VC={self.vector_clock}"
+        return f"Msg[{self.message_id}] from P{self.sender_id}->P{self.receiver_id}: '{self.content}' tm={self.tm} V_M={self.v_m}"
     
     def __repr__(self):
         return self.__str__()
@@ -56,87 +59,74 @@ class MessageBuffer:
         self.total_buffered = 0
         self.total_delivered = 0
     
-    def add_message(self, message, current_vc):
+    def add_message(self, message, current_t_p=None):
         """
         Thêm message vào buffer
         
         Args:
             message: Message cần buffer
-            current_vc: Vector clock hiện tại
+            current_t_p: Vector timestamp hiện tại của receiver (optional, for logging)
         """
         self.buffer.append(message)
         self.total_buffered += 1
-        
-        # Xác định lý do cụ thể phải buffer
-        sender_id = message.sender_id
-        msg_vc = message.vector_clock
-        
-        reasons = []
-        
-        # Kiểm tra điều kiện 1: VC_m[sender] = VC_current[sender] + 1
-        if msg_vc[sender_id] != current_vc[sender_id] + 1:
-            expected = current_vc[sender_id] + 1
-            actual = msg_vc[sender_id]
-            if actual > expected:
-                missing = actual - expected
-                reasons.append(f"Missing {missing} message(s) from P{sender_id} (need VC[{sender_id}]={expected}, got {actual})")
-            else:
-                reasons.append(f"Old message from P{sender_id} (VC[{sender_id}]={actual} < {expected})")
-        
-        # Kiểm tra điều kiện 2: VC_m[k] <= VC_current[k] với mọi k != sender
-        for k in range(len(msg_vc)):
-            if k != sender_id and msg_vc[k] > current_vc[k]:
-                missing = msg_vc[k] - current_vc[k]
-                reasons.append(f"Missing {missing} message(s) from P{k} (need VC[{k}]={msg_vc[k]}, have {current_vc[k]})")
-        
-        reason_text = "; ".join(reasons) if reasons else "Causal dependencies not satisfied"
-        self.logger.log_buffer(message, len(self.buffer), current_vc, reason_text)
+        self.logger.log_buffer(message, len(self.buffer), current_t_p)
     
-    def check_deliverable(self, message, current_vc):
+    def check_deliverable(self, message, receiver_id, v_p_receiver, t_p_receiver):
         """
-        Kiểm tra xem message có thể deliver được không theo điều kiện SES
+        Check if message can be delivered according to SES algorithm
         
-        Điều kiện deliver message m từ Pi đến Pj:
-        1. VC_m[i] = VC_j[i] + 1 (message tiếp theo từ sender)
-        2. VC_m[k] <= VC_j[k] với mọi k != i (không có message nào bị thiếu)
+        SES Delivery Conditions:
+        1. If V_M does not contain (receiver_id, t), message can be delivered
+        2. If (receiver_id, t) exists in V_M:
+           - If t > t_receiver: buffer the message (don't deliver)
+           - If t <= t_receiver: deliver it
+        
+        Where t > t_receiver means: EXISTS i such that t[i] > t_receiver[i]
+        (There exists an event in another process that receiver hasn't updated)
         
         Args:
-            message: Message cần kiểm tra
-            current_vc: Vector clock hiện tại của process
+            message: Message to check
+            receiver_id: ID of receiving process
+            v_p_receiver: V_P structure of receiver
+            t_p_receiver: Vector timestamp of receiver (list)
             
         Returns:
-            True nếu có thể deliver, False nếu không
+            True if deliverable, False if should be buffered
         """
-        sender_id = message.sender_id
-        msg_vc = message.vector_clock
+        # Check if V_M contains entry for receiver
+        if receiver_id not in message.v_m:
+            # V_M does not contain (receiver_id, t) -> can deliver
+            return True
         
-        # Điều kiện 1: VC_m[sender] = VC_current[sender] + 1
-        if msg_vc[sender_id] != current_vc[sender_id] + 1:
-            return False
+        # V_M contains (receiver_id, t)
+        t_in_v_m = message.v_m[receiver_id]
         
-        # Điều kiện 2: VC_m[k] <= VC_current[k] với mọi k != sender
-        for k in range(len(msg_vc)):
-            if k != sender_id:
-                if msg_vc[k] > current_vc[k]:
-                    return False
+        # Check if t > t_receiver: EXISTS i such that t[i] > t_receiver[i]
+        # If so, buffer (return False)
+        # Otherwise (t <= t_receiver for all i), deliver (return True)
+        t_greater = any(t_in_v_m[i] > t_p_receiver[i] for i in range(len(t_in_v_m)))
         
-        return True
+        # If t > t_receiver (any component greater): buffer (return False)
+        # If t <= t_receiver (all components <=): deliver (return True)
+        return not t_greater
     
-    def get_deliverable_messages(self, current_vc):
+    def get_deliverable_messages(self, receiver_id, v_p_receiver, t_p_receiver):
         """
-        Lấy danh sách các messages có thể deliver từ buffer
+        Get list of deliverable messages from buffer
         
         Args:
-            current_vc: Vector clock hiện tại
+            receiver_id: ID of receiving process
+            v_p_receiver: V_P structure of receiver
+            t_p_receiver: Local time of receiver
             
         Returns:
-            List các messages có thể deliver
+            List of deliverable messages
         """
         deliverable = []
         remaining = []
         
         for msg in self.buffer:
-            if self.check_deliverable(msg, current_vc):
+            if self.check_deliverable(msg, receiver_id, v_p_receiver, t_p_receiver):
                 deliverable.append(msg)
                 self.total_delivered += 1
             else:

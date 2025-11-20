@@ -43,11 +43,11 @@ def print_banner(process_id):
     print("="*70)
     print("\n  Thuật toán SES (Schiper-Eggli-Sandoz)")
     print("  - Đảm bảo causal ordering của messages trong hệ thống phân tán")
-    print("  - Sử dụng Vector Clock để theo dõi quan hệ nhân quả")
+    print("  - Sử dụng V_P structure với (destination, timestamp) pairs")
     print("  - Buffering messages vi phạm causal order")
     print("\n  Phím tắt:")
     print("    's' - Hiển thị thống kê")
-    print("    'v' - Hiển thị Vector Clock")
+    print("    'v' - Hiển thị SES Vector")
     print("    'b' - Hiển thị trạng thái Buffer")
     print("    'q' - Thoát chương trình")
     print("="*70 + "\n")
@@ -61,7 +61,7 @@ def print_help():
     print("="*70)
     print("\n  Các lệnh có sẵn:")
     print("    's' hoặc 'stats'    - Hiển thị thống kê chi tiết")
-    print("    'v' hoặc 'vc'       - Hiển thị Vector Clock hiện tại")
+    print("    'v' hoặc 'vc'       - Hiển thị SES Vector hiện tại")
     print("    'b' hoặc 'buffer'   - Hiển thị trạng thái Buffer")
     print("    'h' hoặc 'help'     - Hiển thị hướng dẫn này")
     print("    'q' hoặc 'quit'     - Thoát chương trình")
@@ -75,19 +75,23 @@ def display_statistics(process):
 
 def display_vector_clock(process):
     """
-    Hiển thị vector clock hiện tại
+    Hiển thị SES Vector structure hiện tại
     """
     stats = process.get_statistics()
     print(f"\n{'='*60}")
-    print(f"Vector Clock của Process {process.process_id}")
+    print(f"SES Vector của Process {process.process_id}")
     print(f"{'='*60}")
-    print(f"VC = {stats['vector_clock']}")
+    print(f"Vector Time: {stats['vector_time']}")
+    print(f"V_P Size: {stats['v_p_size']}")
     
-    # Hiển thị chi tiết từng phần tử
-    print("\nChi tiết:")
-    for i, value in enumerate(stats['vector_clock']):
-        marker = " <-- (This process)" if i == process.process_id else ""
-        print(f"  P{i}: {value}{marker}")
+    # Show details
+    with process.vc_lock:
+        print(f"\nChi tiết V_P:")
+        if process.ses_vector.v_p:
+            for dest, t_vec in process.ses_vector.v_p.items():
+                print(f"  (P{dest}, {t_vec})")
+        else:
+            print("  (empty)")
     print(f"{'='*60}\n")
 
 def display_buffer_status(process):
