@@ -1,6 +1,6 @@
 {
-  "num_processes": 15,
-  "messages_per_process": 150,
+  "num_processes": 2,
+  "messages_per_process": 10,
   "base_port": 5000,
   "host": "127.0.0.1",
   "message_rate_min": 10,

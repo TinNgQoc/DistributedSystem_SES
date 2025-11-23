@@ -33,24 +33,24 @@ def load_config(config_path="../config/config.json"):
     with open(config_file, 'r') as f:
         return json.load(f)
 
-def print_banner(process_id):
-    """
-    In banner khi khởi động process
-    """
-    print("\n" + "="*70)
-    print(f"  SES ALGORITHM - CAUSAL ORDERING OF MESSAGES")
-    print(f"  Process ID: {process_id}")
-    print("="*70)
-    print("\n  Thuật toán SES (Schiper-Eggli-Sandoz)")
-    print("  - Đảm bảo causal ordering của messages trong hệ thống phân tán")
-    print("  - Sử dụng V_P structure với (destination, timestamp) pairs")
-    print("  - Buffering messages vi phạm causal order")
-    print("\n  Phím tắt:")
-    print("    's' - Hiển thị thống kê")
-    print("    'v' - Hiển thị SES Vector")
-    print("    'b' - Hiển thị trạng thái Buffer")
-    print("    'q' - Thoát chương trình")
-    print("="*70 + "\n")
+# def print_banner(process_id):
+#     """
+#     In banner khi khởi động process
+#     """
+#     print("\n" + "="*70)
+#     print(f"  SES ALGORITHM - CAUSAL ORDERING OF MESSAGES")
+#     print(f"  Process ID: {process_id}")
+#     print("="*70)
+#     print("\n  Thuật toán SES (Schiper-Eggli-Sandoz)")
+#     print("  - Đảm bảo causal ordering của messages trong hệ thống phân tán")
+#     print("  - Sử dụng V_P structure với (destination, timestamp) pairs")
+#     print("  - Buffering messages vi phạm causal order")
+#     print("\n  Phím tắt:")
+#     print("    's' - Hiển thị thống kê")
+#     print("    'v' - Hiển thị SES Vector")
+#     print("    'b' - Hiển thị trạng thái Buffer")
+#     print("    'q' - Thoát chương trình")
+#     print("="*70 + "\n")
 
 def print_help():
     """
@@ -182,7 +182,7 @@ def main():
         sys.exit(1)
     
     # In banner
-    print_banner(process_id)
+    # print_banner(process_id)
     
     # Khởi tạo process
     print(f"Khởi tạo Process {process_id}...")

@@ -60,11 +60,11 @@ class SESControlPanel:
             print(f"❌ Lỗi load config: {e}")
             return False
     
-    def save_custom_config(self, num_processes, rate_min, rate_max):
+    def save_custom_config(self, num_processes, rate_min, rate_max, max_messages):
         """Tạo config tùy chỉnh"""
         config = {
             "num_processes": num_processes,
-            "messages_per_process": 150,
+            "messages_per_process": max_messages,
             "base_port": 5000,
             "host": "127.0.0.1",
             "message_rate_min": rate_min,
@@ -110,12 +110,12 @@ class SESControlPanel:
         # Số processes
         while True:
             try:
-                num = input("📊 Số processes (3-30) [mặc định: 15]: ").strip()
+                num = input("📊 Số processes (2-30) [mặc định: 15]: ").strip()
                 if not num:
                     num_processes = 15
                     break
                 num_processes = int(num)
-                if 3 <= num_processes <= 30:
+                if 2 <= num_processes <= 30:
                     break
                 print("   ⚠️  Phải từ 3 đến 30 processes!")
             except ValueError:
@@ -149,11 +149,25 @@ class SESControlPanel:
             except ValueError:
                 print("   ⚠️  Vui lòng nhập số!")
         
-        print(f"\n✅ Config: {num_processes} processes, rate {rate_min}-{rate_max} msg/phút\n")
+        # Max messages per process
+        while True:
+            try:
+                msgs = input("📨 Số message tối đa mỗi process (10-1000) [mặc định: 150]: ").strip()
+                if not msgs:
+                    max_messages = 150
+                    break
+                max_messages = int(msgs)
+                if 10 <= max_messages <= 1000:
+                    break
+                print("   ⚠️  Phải từ 10 đến 1000 messages!")
+            except ValueError:
+                print("   ⚠️  Vui lòng nhập số!")
+        
+        print(f"\n✅ Config: {num_processes} processes, {max_messages} msgs/process, rate {rate_min}-{rate_max} msg/phút\n")
         
         confirm = input("Xác nhận? (y/n): ").strip().lower()
         if confirm == 'y':
-            return num_processes, rate_min, rate_max
+            return num_processes, rate_min, rate_max, max_messages
         return None
     
     def start_processes(self, use_custom=False, custom_params=None):
@@ -163,8 +177,8 @@ class SESControlPanel:
         
         # Load hoặc tạo config
         if use_custom and custom_params:
-            num_processes, rate_min, rate_max = custom_params
-            self.config = self.save_custom_config(num_processes, rate_min, rate_max)
+            num_processes, rate_min, rate_max, max_messages = custom_params
+            self.config = self.save_custom_config(num_processes, rate_min, rate_max, max_messages)
             config_file = "config_custom.json"
         else:
             if not self.load_config():
